@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.tesis.tesis.HelloController">
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <GridPane alignment="CENTER" hgap="10" vgap="10">
+        <Label text="Input Size:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="inputSizeField" GridPane.columnIndex="1" GridPane.rowIndex="0" text="2"/>
+
+        <Label text="Hidden Layer Sizes:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="hiddenLayerSizesField" GridPane.columnIndex="1" GridPane.rowIndex="2" text="2"/>
+
+        <Label text="Output Size:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="outputSizeField" GridPane.columnIndex="1" GridPane.rowIndex="3" text="1"/>
+
+        <Label text="Learning Rate:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <TextField fx:id="learningRateField" GridPane.columnIndex="1" GridPane.rowIndex="4" text="0.5"/>
+
+        <Label text="Momentum:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <TextField fx:id="momentumField" GridPane.columnIndex="1" GridPane.rowIndex="5" text="0.9"/>
+
+        <Label text="Training Data:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <TextArea fx:id="trainingDataArea" GridPane.columnIndex="1" GridPane.rowIndex="6" text="0, 0&#10;0, 1&#10;1, 0&#10;1, 1"/>
+
+        <Label text="Targets:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+        <TextArea fx:id="targetsArea" GridPane.columnIndex="1" GridPane.rowIndex="7" text="0&#10;1&#10;1&#10;0"/>
+
+        <!-- Log Area -->
+        <Label text="Log:" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+        <TextArea fx:id="logArea" GridPane.columnIndex="1" GridPane.rowIndex="10" prefWidth="300" prefHeight="200"/>
+
+        <Button text="Train and Test MLP" onAction="#trainAndTestMLP" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+    </GridPane>
+</VBox>
