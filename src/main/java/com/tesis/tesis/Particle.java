@@ -1,6 +1,7 @@
 package com.tesis.tesis;
 
 import java.security.SecureRandom;
+import java.util.List;
 
 public class Particle {
     private double[] position;
@@ -11,6 +12,14 @@ public class Particle {
         SecureRandom random = new SecureRandom();
         this.position = position;
         this.velocity = random.doubles().limit(position.length).toArray();
+    }
+
+    public Particle(List<Double> position) {
+        SecureRandom random = new SecureRandom();
+        this.position = position.stream()
+                .mapToDouble(Double::doubleValue)
+                .toArray();
+        this.velocity = random.doubles().limit(position.size()).toArray();
     }
 
     public Particle(Particle particle) {

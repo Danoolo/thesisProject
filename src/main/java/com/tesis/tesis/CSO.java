@@ -6,25 +6,25 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class CSO {
-    private int numParticles;
-    private int numDimensions;
-    private int numIterations;
-    private double phiAveragePosition;
+    private final int numParticles;
+    private final int numDimensions;
+    private final int numIterations;
+    private final double phiAveragePosition;
+    private final Problem problem;
 
-    public CSO(int numParticles, int numDimensions, int numIterations, double phiAveragePosition) {
+    public CSO(int numParticles, int numDimensions, int numIterations, double phiAveragePosition, Problem problem) {
         this.numParticles = numParticles % 2 == 0 ? numParticles : numParticles + 1;
         this.numDimensions = numDimensions;
         this.numIterations = numIterations;
         this.phiAveragePosition = phiAveragePosition;
+        this.problem = problem;
     }
 
-    public void optimize() {
+    public double optimize() {
         SecureRandom rand = new SecureRandom();
-        List<Particle> swarm = new ArrayList<>();
 
         // Initialize particles randomly
-        for (int i = 0; i < numParticles; i++)
-            swarm.add(new Particle(rand.doubles().limit(numDimensions).toArray()));
+        List<Particle> swarm = problem.generateRandomSwarm(numParticles);
 
         // Main optimization loop
         for (int iter = 0; iter < numIterations; iter++) {
@@ -32,18 +32,19 @@ public class CSO {
             List<Particle> nextSwarm = new ArrayList<>();
 
             // Calculate the fitness of all particles in the swarm
-            swarm.forEach(particle -> particle.setFitness(Problem.calculateFitness(particle.getPosition())));
+            swarm.forEach(particle -> particle.setFitness(problem.calculateFitness(particle.getPosition())));
 
             // Competitive phase
             Particle particle1;
             Particle particle2;
             Particle particleWinner;
             Particle particleLoser;
+            List<Particle> originalSwarm = swarm.stream().map(Particle::new).toList();
             while (!swarm.isEmpty()) {
                 particle1 = swarm.remove(rand.nextInt(swarm.size()));
                 particle2 = swarm.remove(rand.nextInt(swarm.size()));
 
-                if (Problem.compareFitnessValues(particle1.getFitness(), particle2.getFitness()) < 0) {
+                if (problem.compareFitnessValues(particle1.getFitness(), particle2.getFitness()) < 0) {
                     particleLoser = particle1;
                     particleWinner = particle2;
                 } else {
@@ -52,22 +53,22 @@ public class CSO {
                 }
 
                 Particle pLoserCopy = new Particle(particleLoser);
-                pLoserCopy.setVelocity(getNewVelocity(particleWinner, particleLoser, rand, swarm));
+                pLoserCopy.setVelocity(getNewVelocity(particleWinner, particleLoser, rand, originalSwarm));
                 pLoserCopy.setPosition(arrayOperation(particleLoser.getPosition(), pLoserCopy.getVelocity(), "+"));
 
                 nextSwarm.add(new Particle(particleWinner));
                 nextSwarm.add(pLoserCopy);
-
-                swarm = nextSwarm;
             }
+            swarm = nextSwarm;
         }
+
+        return problem.calculateBestFitness(swarm.stream().map(Particle::getPosition).toList());
     }
 
     private double[] getAveragePosition(List<Particle> swarm) {
-        int arrayLength = swarm.size();
-        double[] averageArray = new double[arrayLength];
+        double[] averageArray = new double[numDimensions];
 
-        for (int i = 0; i < arrayLength; i++) {
+        for (int i = 0; i < numDimensions; i++) {
             int finalI = i;
             double average = swarm.stream()
                     .mapToDouble(particle -> particle.getPosition()[finalI]) // Get value at current index from each array
@@ -121,18 +122,14 @@ public class CSO {
 
     // Main method for testing
     public static void main(String[] args) {
-        int numParticles = 20;
-        int numDimensions = 10;
+        int numParticles = 6;
+        int numDimensions = 2;
         int numIterations = 100;
         double phiAveragePosition = 0.1d;
 
-        CSO cso = new CSO(numParticles, numDimensions, numIterations, phiAveragePosition);
-        cso.optimize();
+        CSO cso = new CSO(numParticles, numDimensions, numIterations, phiAveragePosition, new ParaboloidProblem());
+        double bestFitness = cso.optimize();
 
-//        System.out.println("Best fitness: " + cso.getBestFitness());
-//        System.out.println("Best position: ");
-//        for (double val : cso.getBestPosition()) {
-//            System.out.print(val + " ");
-//        }
+        System.out.println("Best fitness: " + bestFitness);
     }
 }

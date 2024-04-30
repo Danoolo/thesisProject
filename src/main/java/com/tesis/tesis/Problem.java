@@ -1,23 +1,14 @@
 package com.tesis.tesis;
 
-public class Problem {
+import java.util.ArrayList;
+import java.util.List;
 
-    public static double calculateFitness(double[] position) {
-        double sum = 0;
-        for (double x : position) {
-            sum += Math.pow(x, 2); // Sphere function
-        }
-        return sum;
-    }
+public abstract class Problem {
+    protected int dimension;
+    protected List<double[]> domain;
 
-    /**
-     *
-     * @return
-     *  1: if fitnessToCompare is better than fitnessReference
-     *  0: if fitnessToCompare is equal to fitnessReference
-     * -1: if fitnessToCompare is worst than fitnessReference
-     */
-    public static int compareFitnessValues(double fitnessToCompare, double fitnessReference) {
-        return Double.compare(fitnessToCompare, fitnessReference);
-    }
+    abstract double calculateFitness(double[] position);
+    abstract int compareFitnessValues(double fitness1, double fitness2);
+    abstract double calculateBestFitness(List<double[]> positions);
+    abstract List<Particle> generateRandomSwarm(int numParticles);
 }
