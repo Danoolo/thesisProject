@@ -71,11 +71,11 @@ public class CSO {
         for (int i = 0; i < numDimensions; i++) {
             int finalI = i;
             double average = swarm.stream()
-                    .mapToDouble(particle -> particle.getPosition()[finalI]) // Get value at current index from each array
-                    .average()                      // Calculate average for the current index
-                    .orElseThrow();                 // Throw exception if average is not present
+                    .mapToDouble(particle -> particle.getPosition()[finalI])
+                    .average()
+                    .orElseThrow();
 
-            averageArray[i] = average; // Store the average value in the result array
+            averageArray[i] = average;
         }
 
         return averageArray;
